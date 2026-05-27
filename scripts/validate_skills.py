@@ -33,6 +33,7 @@ def parse_frontmatter(text):
                 i += 1
                 while i < len(fm_lines) and fm_lines[i].startswith("  "):
                     parts.append(fm_lines[i].strip())
+                    i += 1
                 i -= 1
                 fields[key] = " ".join(parts)
             else:
