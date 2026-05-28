@@ -1,0 +1,36 @@
+name: Build and release skills
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: python3 scripts/validate_skills.py
+
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: python3 scripts/build_skills.py
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest skills
+          make_latest: true
+          body: |
+            Rolling release — updated on every push to `main`.
+            Download the `.skill` file for the skill you want and drop it into your Claude skills folder.
+          files: dist/*.skill
